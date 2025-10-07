@@ -1,0 +1,86 @@
+<header class="bg-white border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="py-3">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <div
+            class="h-8 w-8 bg-blue-600 rounded flex items-center justify-center"
+          >
+            <span class="text-white font-bold text-xs">HM</span>
+          </div>
+          <span class="ml-2 text-lg font-semibold text-gray-900">Hej Mads</span>
+        </div>
+
+        <div class="flex items-center space-x-1">
+          <button
+            class="p-1.5 rounded hover:bg-gray-100 transition-colors"
+            title="Filtrar"
+          >
+            <i class="pi pi-filter text-gray-500 text-base"></i>
+          </button>
+          <button
+            class="p-1.5 rounded hover:bg-gray-100 transition-colors"
+            title="Exportar"
+          >
+            <i class="pi pi-download text-gray-500 text-base"></i>
+          </button>
+          <button
+            class="p-1.5 rounded hover:bg-gray-100 transition-colors"
+            title="Agregar"
+          >
+            <i class="pi pi-plus-circle text-gray-500 text-base"></i>
+          </button>
+          <button
+            class="p-1.5 rounded hover:bg-gray-100 transition-colors"
+            title="Vista"
+          >
+            <i class="pi pi-th-large text-gray-500 text-base"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-1">
+        <p class="text-xs text-gray-500">
+          Welcome back. Last login:
+          <span class="font-medium text-gray-700"
+            >Aug 29, 2024 at 10:24 CET</span
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- <button
+(click)="addCard()"
+class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+</button>
+> -->
+<div class="w-full h-[90vh] bg">
+  <gridster [options]="options" class="w-full h-full">
+    <gridster-item *ngFor="let item of dashboard; let i = index" [item]="item">
+      <div
+        class="relative w-full h-full overflow-hidden rounded-lg shadow-md group transition-all duration-200"
+      >
+        <button
+          (click)="removeCard(i)"
+          class="absolute top-2 right-2 z-10 bg-black/50 text-white p-1 rounded hover:bg-red-500 transition opacity-0 group-hover:opacity-100"
+          title="Eliminar"
+        >
+          ✕
+        </button>
+
+        <img
+          [src]="item.image"
+          [alt]="item.title"
+          class="w-full h-full object-cover pointer-events-none group-hover:brightness-90 transition"
+        />
+
+        <div
+          class="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded opacity-90 group-hover:opacity-100 transition"
+        >
+          {{ item.title }}
+        </div>
+      </div>
+    </gridster-item>
+  </gridster>
+</div>
