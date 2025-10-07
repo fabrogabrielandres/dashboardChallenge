@@ -6,16 +6,24 @@ import {
 } from 'angular-gridster2';
 import { CommonModule } from '@angular/common';
 import { ReportsService } from '../../services/reports.service';
+import { ChartViewerComponent } from '../../components/chart-viewer/chart-viewer.component';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 interface MyGridsterItem extends GridsterItem {
   title: string;
-  image: string;
+  type: string; // 'bar', 'pie', etc.
+  data: any; // datos para ECharts
 }
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [CommonModule, GridsterModule],
+  imports: [
+    CommonModule,
+    GridsterModule,
+    ChartViewerComponent,
+    NgxEchartsModule,
+  ],
   templateUrl: './reports.component.html',
 })
 export class ReportsComponent {
@@ -45,15 +53,41 @@ export class ReportsComponent {
   error = computed(() => this.reportsQuery.error());
 
   constructor() {
-    // create cards
-    for (let i = 1; i <= 10; i++) {
+    const chartMock = {
+      title: 'Riesgos por Categoría',
+      type: 'bar',
+      data: {
+        xAxis: {
+          type: 'category',
+          data: [
+            'Legal',
+            'Financiero',
+            'Operativo',
+            'Reputacional',
+            'Tecnológico',
+          ],
+        },
+        yAxis: { type: 'value' },
+        series: [
+          {
+            data: [50, 80, 60, 90, 30],
+            type: 'bar',
+            itemStyle: { color: '#3b82f6' },
+          },
+        ],
+      },
+    };
+
+    // repetir 10 veces
+    for (let i = 0; i < 10; i++) {
       this.dashboard.push({
         cols: 2,
         rows: 2,
         y: 0,
-        x: (i - 1) % 12,
-        title: `Reporte ${i}`,
-        image: `https://picsum.photos/seed/${i}/600/400`,
+        x: i % 12,
+        title: chartMock.title,
+        type: chartMock.type,
+        data: chartMock.data,
       });
     }
   }
@@ -66,7 +100,27 @@ export class ReportsComponent {
       y: 0,
       x: 0,
       title: `Nuevo ${id}`,
-      image: `https://picsum.photos/seed/${id}/600/400`,
+      type: 'bar',
+      data: {
+        xAxis: {
+          type: 'category',
+          data: [
+            'Legal',
+            'Financiero',
+            'Operativo',
+            'Reputacional',
+            'Tecnológico',
+          ],
+        },
+        yAxis: { type: 'value' },
+        series: [
+          {
+            data: [50, 80, 60, 90, 30],
+            type: 'bar',
+            itemStyle: { color: '#3b82f6' },
+          },
+        ],
+      },
     });
     this.recalculateGrid();
   }
@@ -79,4 +133,30 @@ export class ReportsComponent {
   recalculateGrid() {
     this.dashboard = [...this.dashboard];
   }
+
+  chartData = {
+    id: 1,
+    type: 'bar',
+    title: 'Riesgos por Categoría',
+    data: {
+      xAxis: {
+        type: 'category',
+        data: [
+          'Legal',
+          'Financiero',
+          'Operativo',
+          'Reputacional',
+          'Tecnológico',
+        ],
+      },
+      yAxis: { type: 'value' },
+      series: [
+        {
+          data: [50, 80, 60, 90, 30],
+          type: 'bar',
+          itemStyle: { color: '#3b82f6' },
+        },
+      ],
+    },
+  };
 }

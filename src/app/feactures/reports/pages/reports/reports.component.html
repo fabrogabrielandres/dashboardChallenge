@@ -69,17 +69,13 @@ class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
           ✕
         </button>
 
-        <img
-          [src]="item.image"
-          [alt]="item.title"
-          class="w-full h-full object-cover pointer-events-none group-hover:brightness-90 transition"
-        />
-
-        <div
-          class="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded opacity-90 group-hover:opacity-100 transition"
-        >
-          {{ item.title }}
-        </div>
+        <!-- Gráfico adaptable -->
+        <app-chart-viewer
+          [title]="item.title"
+          [options]="item.data"
+          [type]="item.type"
+          class="w-full h-full"
+        ></app-chart-viewer>
       </div>
     </gridster-item>
   </gridster>

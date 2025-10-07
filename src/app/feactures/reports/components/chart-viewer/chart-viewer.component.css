@@ -1,0 +1,9 @@
+.chart-container {
+  width: 100%;
+  height: 100%; /* ocupar todo el contenedor */
+}
+
+.chart {
+  width: 100%;
+  height: 100%; /* adaptar el gráfico al contenedor */
+}
