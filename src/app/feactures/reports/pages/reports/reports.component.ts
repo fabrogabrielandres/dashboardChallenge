@@ -42,7 +42,7 @@ export class ReportsComponent {
     margin: 10,
     minCols: 12,
     maxCols: 12,
-    minRows: 1,
+    minRows: 12,
     maxRows: 12,
     defaultItemCols: 2,
     defaultItemRows: 2,
