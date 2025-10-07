@@ -1,6 +1,10 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GridsterModule, GridsterConfig, GridsterItem } from 'angular-gridster2';
+import {
+  GridsterModule,
+  GridsterConfig,
+  GridsterItem,
+} from 'angular-gridster2';
 import { ReportsService } from '../../services/reports.service';
 import { ChartViewerComponent } from '../../components/chart-viewer/chart-viewer.component';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -15,7 +19,12 @@ interface MyGridsterItem extends GridsterItem {
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [CommonModule, GridsterModule, ChartViewerComponent, NgxEchartsModule],
+  imports: [
+    CommonModule,
+    GridsterModule,
+    ChartViewerComponent,
+    NgxEchartsModule,
+  ],
   templateUrl: './reports.component.html',
 })
 export class ReportsComponent {
@@ -87,7 +96,13 @@ export class ReportsComponent {
       data: {
         xAxis: {
           type: 'category',
-          data: ['Legal', 'Financiero', 'Operativo', 'Reputacional', 'Tecnológico'],
+          data: [
+            'Legal',
+            'Financiero',
+            'Operativo',
+            'Reputacional',
+            'Tecnológico',
+          ],
         },
         yAxis: { type: 'value' },
         series: [
@@ -103,5 +118,17 @@ export class ReportsComponent {
     const updated = [...this.dashboard(), newCard];
     this.dashboard.set(updated);
     this.queryClient.setQueryData(['reports'], updated);
+  }
+
+   isHidden = signal(true); // true = “No mostrar”, false = “Mostrar”
+  isPanelOpen = signal(false); // controla si el panel está desplegado
+
+  togglePanel() {
+    this.isPanelOpen.update(open => !open);
+  }
+
+  setOption(value: boolean) {
+    this.isHidden.set(value);
+    this.isPanelOpen.set(false); // cierra el panel al seleccionar
   }
 }

@@ -12,12 +12,41 @@
         </div>
 
         <div class="flex items-center space-x-1">
-          <button
-            class="p-1.5 rounded bg-[#495468] transition-colors"
-            title="Filtrar"
-          >
-            <img src="/icon1.svg" alt="Filtrar" class="w-5 h-5" />
-          </button>
+          <div class="relative inline-block">
+            <!-- Icon button -->
+            <button
+              class="p-1.5 rounded bg-[#495468] transition-colors hover:bg-[#3b4458] flex items-center justify-center"
+              (click)="togglePanel()"
+              title="Filter"
+            >
+              <img src="/icon1.svg" alt="Filter" class="w-5 h-5" />
+            </button>
+
+            <!-- Dropdown panel -->
+            <div
+              *ngIf="isPanelOpen()"
+              class="absolute mt-1 bg-white rounded-xl p-1 w-28 flex flex-col gap-1"
+            >
+              <!-- Show option -->
+              <div
+                class="cursor-pointer flex items-center justify-between px-2 py-1 hover:bg-gray-100 rounded-xl"
+                (click)="setOption(false)"
+              >
+                <span>Show</span>
+                <span *ngIf="!isHidden()">✔</span>
+              </div>
+
+              <!-- Don't Show option -->
+              <div
+                class="cursor-pointer flex items-center justify-between px-2 py-1 hover:bg-gray-100 rounded-xl"
+                (click)="setOption(true)"
+              >
+                <span>Don't Show</span>
+                <span *ngIf="isHidden()">✔</span>
+              </div>
+            </div>
+          </div>
+
           <button
             class="p-1.5 rounded bg-[#495468] transition-colors"
             title="Filtrar"
