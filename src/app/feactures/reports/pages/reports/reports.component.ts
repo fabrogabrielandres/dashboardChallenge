@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import {
   GridsterModule,
   GridsterConfig,
   GridsterItem,
 } from 'angular-gridster2';
 import { CommonModule } from '@angular/common';
+import { ReportsService } from '../../services/reports.service';
 
 interface MyGridsterItem extends GridsterItem {
   title: string;
@@ -35,6 +36,13 @@ export class ReportsComponent {
   };
 
   dashboard: MyGridsterItem[] = [];
+  private reportsService = inject(ReportsService);
+
+  reportsQuery = this.reportsService.reportsQuery;
+
+  charts = computed(() => this.reportsQuery.data() ?? []);
+  loading = computed(() => this.reportsQuery.isLoading());
+  error = computed(() => this.reportsQuery.error());
 
   constructor() {
     // create cards
