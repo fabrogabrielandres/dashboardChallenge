@@ -31,22 +31,22 @@ export class ReportsComponent {
   private reportsService = inject(ReportsService);
   private queryClient = inject(QueryClient);
 
-  // TanStack Query para cargar los datos (solo una vez)
   reportsQuery = this.reportsService.reportsQuery;
 
-  // Signal local editable que se inicializa con los datos del query
   dashboard = signal<MyGridsterItem[]>([]);
 
-  // Computed para loading y error
   loading = computed(() => this.reportsQuery.isLoading());
   error = computed(() => this.reportsQuery.error());
 
-  // Configuración del grid
+  // false = mostrar visibles, true = mostrar ocultas
+  isHidden = signal(false);
+  isPanelOpen = signal(false);
+
   options: GridsterConfig = {
     draggable: { enabled: true, stop: () => this.saveLayout() },
     resizable: { enabled: true, stop: () => this.saveLayout() },
     pushItems: true,
-    swap: true,
+    swap: false,
     compactType: 'compactUp&Left',
     margin: 10,
     minCols: 12,
@@ -59,76 +59,93 @@ export class ReportsComponent {
   };
 
   constructor() {
-    // Inicializamos dashboard solo una vez con los datos del servicio
     effect(() => {
       const data = this.reportsQuery.data();
-      if (data && this.dashboard().length === 0) {
-        this.dashboard.set([...data]);
+      if (data && !this.queryClient.getQueryData(['visibleCards'])) {
+        this.queryClient.setQueryData(['visibleCards'], [...data]);
+        this.queryClient.setQueryData(['hiddenCards'], []);
       }
+      this.updateDisplayedGrid();
+    });
+
+    effect(() => {
+      this.updateDisplayedGrid();
     });
   }
 
-  /** Guardar los cambios en el grid localmente y en el cache de TanStack */
-  saveLayout() {
-    const updatedLayout = [...this.dashboard()];
-    this.dashboard.set(updatedLayout);
-
-    // También actualizamos el cache de TanStack (sin refetch)
-    this.queryClient.setQueryData(['reports'], updatedLayout);
+  /** Resetea posiciones y tamaño */
+  private resetPositions(cards: MyGridsterItem[]): MyGridsterItem[] {
+    return cards.map((card, index) => ({
+      ...card,
+      x: (index * 3) % 12,
+      y: Math.floor((index * 3) / 12) * 3,
+      cols: 3,
+      rows: 3,
+    }));
   }
 
-  /** Eliminar una tarjeta */
+  /** Actualiza el grid activo y formatea solo este */
+  private updateDisplayedGrid() {
+    const visible = this.queryClient.getQueryData<MyGridsterItem[]>(['visibleCards']) || [];
+    const hidden = this.queryClient.getQueryData<MyGridsterItem[]>(['hiddenCards']) || [];
+
+    // Formatea el grid activo para que aparezca ordenado
+    const normalized = this.isHidden() ? this.resetPositions(hidden) : this.resetPositions(visible);
+    this.dashboard.set(normalized);
+  }
+
+  saveLayout() {
+    const current = [...this.dashboard()];
+    if (this.isHidden()) {
+      this.queryClient.setQueryData(['hiddenCards'], current);
+    } else {
+      this.queryClient.setQueryData(['visibleCards'], current);
+    }
+  }
+
   removeCard(index: number) {
     const updated = this.dashboard().filter((_, i) => i !== index);
     this.dashboard.set(updated);
-    this.queryClient.setQueryData(['reports'], updated);
+    this.saveLayout();
   }
 
-  /** Agregar una nueva tarjeta */
-  addCard() {
-    const newCard: MyGridsterItem = {
-      cols: 2,
-      rows: 2,
-      y: 0,
-      x: 0,
-      title: `Nuevo ${this.dashboard().length + 1}`,
-      type: 'bar',
-      data: {
-        xAxis: {
-          type: 'category',
-          data: [
-            'Legal',
-            'Financiero',
-            'Operativo',
-            'Reputacional',
-            'Tecnológico',
-          ],
-        },
-        yAxis: { type: 'value' },
-        series: [
-          {
-            data: [50, 80, 60, 90, 30],
-            type: 'bar',
-            itemStyle: { color: '#3b82f6' },
-          },
-        ],
-      },
-    };
+  toggleCardVisibility(item: MyGridsterItem) {
+    const visible = this.queryClient.getQueryData<MyGridsterItem[]>(['visibleCards']) || [];
+    const hidden = this.queryClient.getQueryData<MyGridsterItem[]>(['hiddenCards']) || [];
+    const resized = { ...item, cols: 3, rows: 3 };
 
-    const updated = [...this.dashboard(), newCard];
-    this.dashboard.set(updated);
-    this.queryClient.setQueryData(['reports'], updated);
+    let updatedVisible = [...visible];
+    let updatedHidden = [...hidden];
+
+    if (this.isHidden()) {
+      // actualmente en ocultas → mover a visibles
+      updatedHidden = hidden.filter(c => c.title !== item.title);
+      updatedVisible.push(resized);
+      this.queryClient.setQueryData(['hiddenCards'], updatedHidden); // NO resetear
+      this.queryClient.setQueryData(['visibleCards'], updatedVisible); // solo el activo se resetea
+    } else {
+      updatedVisible = visible.filter(c => c.title !== item.title);
+      updatedHidden.push(resized);
+      this.queryClient.setQueryData(['visibleCards'], updatedVisible);
+      this.queryClient.setQueryData(['hiddenCards'], updatedHidden);
+    }
+
+    this.updateDisplayedGrid(); // resetear solo el grid activo
   }
 
-   isHidden = signal(true); // true = “No mostrar”, false = “Mostrar”
-  isPanelOpen = signal(false); // controla si el panel está desplegado
+  isCardHidden(card: MyGridsterItem): boolean {
+    const hidden = this.queryClient.getQueryData<MyGridsterItem[]>(['hiddenCards']) || [];
+    return hidden.some(h => h.title === card.title);
+  }
 
   togglePanel() {
-    this.isPanelOpen.update(open => !open);
+    this.isPanelOpen.update(v => !v);
   }
 
   setOption(value: boolean) {
     this.isHidden.set(value);
-    this.isPanelOpen.set(false); // cierra el panel al seleccionar
+    this.isPanelOpen.set(false);
+    // Cada vez que cambias de grid, formatea ambos
+    this.updateDisplayedGrid();
   }
 }

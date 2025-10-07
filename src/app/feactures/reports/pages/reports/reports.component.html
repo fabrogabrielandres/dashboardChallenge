@@ -81,7 +81,7 @@
 </header>
 
 <div class="w-full h-[90vh] relative">
-  <!-- Spinner de carga -->
+  <!-- Spinner -->
   <div
     *ngIf="loading()"
     class="absolute inset-0 flex flex-col items-center justify-center bg-white/70 z-20"
@@ -92,7 +92,7 @@
     <span class="mt-4 text-gray-700 font-medium">Loading dashboard...</span>
   </div>
 
-  <!-- Grid principal -->
+  <!-- GRID ACTIVO -->
   <gridster [options]="options" class="w-full h-full">
     <gridster-item
       *ngFor="let item of dashboard(); let i = index"
@@ -101,12 +101,26 @@
       <div
         class="relative w-full h-full overflow-hidden rounded-lg group transition-all duration-200"
       >
+        <!-- Eliminar tarjeta -->
         <button
           (click)="removeCard(i)"
           class="absolute top-2 right-2 z-10 bg-black/50 text-white p-1 rounded hover:bg-red-500 transition opacity-0 group-hover:opacity-100"
           title="Eliminar"
         >
           ✕
+        </button>
+
+        <!-- Alternar visibilidad -->
+        <button
+          (click)="toggleCardVisibility(item)"
+          class="absolute bottom-2 right-2 z-10 bg-black/50 p-1 rounded hover:bg-blue-500 transition opacity-0 group-hover:opacity-100"
+          [title]="isHidden() ? 'Mostrar' : 'Ocultar'"
+        >
+          <img
+            [src]="isHidden() ? '/iconvi.svg' : '/iconhi.svg'"
+            alt="Cambiar visibilidad"
+            class="w-5 h-5"
+          />
         </button>
 
         <app-chart-viewer
