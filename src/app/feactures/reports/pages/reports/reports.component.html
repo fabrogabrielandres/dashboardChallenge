@@ -57,7 +57,10 @@ class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
 > -->
 <div class="w-full h-[90vh] bg">
   <gridster [options]="options" class="w-full h-full">
-    <gridster-item *ngFor="let item of dashboard; let i = index" [item]="item">
+    <gridster-item
+      *ngFor="let item of dashboard(); let i = index"
+      [item]="item"
+    >
       <div
         class="relative w-full h-full overflow-hidden rounded-lg shadow-md group transition-all duration-200"
       >
