@@ -144,7 +144,13 @@ function scatterData() {
     series: [
       {
         type: 'scatter',
-        data: [[1, 2], [2, 4], [3, 3], [4, 5], [5, 4]],
+        data: [
+          [1, 2],
+          [2, 4],
+          [3, 3],
+          [4, 5],
+          [5, 4],
+        ],
         itemStyle: { color: '#ef4444' },
       },
     ],

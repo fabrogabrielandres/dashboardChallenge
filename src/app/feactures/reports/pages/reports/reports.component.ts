@@ -84,14 +84,29 @@ export class ReportsComponent {
     }));
   }
 
-  /** Actualiza el grid activo y formatea solo este */
+  /** Actualiza el grid activo sin resetear posiciones */
   private updateDisplayedGrid() {
     const visible = this.queryClient.getQueryData<MyGridsterItem[]>(['visibleCards']) || [];
     const hidden = this.queryClient.getQueryData<MyGridsterItem[]>(['hiddenCards']) || [];
 
-    // Formatea el grid activo para que aparezca ordenado
+    const current = this.isHidden() ? hidden : visible;
+    this.dashboard.set(current);
+  }
+
+  /** Resetea posiciones y tamaño del grid activo */
+  private resetDisplayedGrid() {
+    const visible = this.queryClient.getQueryData<MyGridsterItem[]>(['visibleCards']) || [];
+    const hidden = this.queryClient.getQueryData<MyGridsterItem[]>(['hiddenCards']) || [];
+
     const normalized = this.isHidden() ? this.resetPositions(hidden) : this.resetPositions(visible);
     this.dashboard.set(normalized);
+
+    // Guardar el reset en el QueryClient
+    if (this.isHidden()) {
+      this.queryClient.setQueryData(['hiddenCards'], normalized);
+    } else {
+      this.queryClient.setQueryData(['visibleCards'], normalized);
+    }
   }
 
   saveLayout() {
@@ -109,6 +124,7 @@ export class ReportsComponent {
     this.saveLayout();
   }
 
+  /** Cambiar visibilidad de una tarjeta sin resetear el grid */
   toggleCardVisibility(item: MyGridsterItem) {
     const visible = this.queryClient.getQueryData<MyGridsterItem[]>(['visibleCards']) || [];
     const hidden = this.queryClient.getQueryData<MyGridsterItem[]>(['hiddenCards']) || [];
@@ -121,31 +137,34 @@ export class ReportsComponent {
       // actualmente en ocultas → mover a visibles
       updatedHidden = hidden.filter(c => c.title !== item.title);
       updatedVisible.push(resized);
-      this.queryClient.setQueryData(['hiddenCards'], updatedHidden); // NO resetear
-      this.queryClient.setQueryData(['visibleCards'], updatedVisible); // solo el activo se resetea
+      this.queryClient.setQueryData(['hiddenCards'], updatedHidden);
+      this.queryClient.setQueryData(['visibleCards'], updatedVisible);
     } else {
+      // actualmente en visibles → mover a ocultas
       updatedVisible = visible.filter(c => c.title !== item.title);
       updatedHidden.push(resized);
       this.queryClient.setQueryData(['visibleCards'], updatedVisible);
       this.queryClient.setQueryData(['hiddenCards'], updatedHidden);
     }
 
-    this.updateDisplayedGrid(); // resetear solo el grid activo
-  }
-
-  isCardHidden(card: MyGridsterItem): boolean {
-    const hidden = this.queryClient.getQueryData<MyGridsterItem[]>(['hiddenCards']) || [];
-    return hidden.some(h => h.title === card.title);
+    this.updateDisplayedGrid(); // solo refresca, no resetea
   }
 
   togglePanel() {
     this.isPanelOpen.update(v => !v);
   }
 
+  /** Cambiar vista de visibles/ocultas */
   setOption(value: boolean) {
+    const prev = this.isHidden();
     this.isHidden.set(value);
     this.isPanelOpen.set(false);
-    // Cada vez que cambias de grid, formatea ambos
-    this.updateDisplayedGrid();
+
+    // Solo resetea si cambió de grid
+    if (prev !== value) {
+      this.resetDisplayedGrid();
+    } else {
+      this.updateDisplayedGrid(); // solo refresca sin reset
+    }
   }
 }

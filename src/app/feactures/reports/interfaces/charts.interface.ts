@@ -1,24 +1,65 @@
-export interface Graphs {
-  Graphs: Graph[];
-}
-
 export interface Graph {
   id: number;
-  type: string;
+  type: string; // 'bar' | 'line' | 'pie' | etc.
   title: string;
-  data: Data;
-  x: number;
-  y: number;
-  cols: number;
-  rows: number;
+  data: GraphData;
 }
 
-export interface Data {
+export interface GraphData {
   xAxis?: Axis;
   yAxis?: Axis;
   series: Series[];
   radar?: Radar;
   visualMap?: VisualMap;
+}
+
+export interface Axis {
+  type?: AxisType;
+  data?: string[];
+  name?: string;
+  min?: number;
+  max?: number;
+}
+
+export enum AxisType {
+  Category = 'category',
+  Value = 'value',
+}
+
+export interface Series {
+  data: (number[] | number | Datum)[];
+  type: string;
+  name?: string;
+  itemStyle?: Style;
+  radius?: string;
+  smooth?: boolean;
+  lineStyle?: Style;
+  progress?: Progress;
+  detail?: Detail;
+  emphasis?: Emphasis;
+}
+
+export interface Datum {
+  value: number[] | number;
+  name: string;
+}
+
+export interface Style {
+  color: string;
+  shadowBlur?: number;
+}
+
+export interface Progress {
+  show: boolean;
+}
+
+export interface Detail {
+  valueAnimation: boolean;
+  formatter: string;
+}
+
+export interface Emphasis {
+  itemStyle: Style;
 }
 
 export interface Radar {
@@ -30,61 +71,9 @@ export interface Indicator {
   max: number;
 }
 
-export interface Series {
-  data: Array<number[] | DatumClass | number>;
-  type: string;
-  itemStyle?: Style;
-  radius?: string;
-  smooth?: boolean;
-  lineStyle?: Style;
-  progress?: Progress;
-  detail?: Detail;
-  name?: string;
-  emphasis?: Emphasis;
-}
-
-export interface DatumClass {
-  value: number[] | number;
-  name: string;
-}
-
-export interface Detail {
-  valueAnimation: boolean;
-  formatter: string;
-}
-
-export interface Emphasis {
-  itemStyle: ItemStyle;
-}
-
-export interface ItemStyle {
-  shadowBlur: number;
-}
-
-export interface Style {
-  color: string;
-}
-
-export interface Progress {
-  show: boolean;
-}
-
 export interface VisualMap {
   min: number;
   max: number;
   calculable: boolean;
   orient: string;
-}
-
-export interface Axis {
-  type?: Type;
-  data?: string[];
-  name?: string;
-  min?: number;
-  max?: number;
-}
-
-export enum Type {
-  Category = 'category',
-  Value = 'value',
 }
