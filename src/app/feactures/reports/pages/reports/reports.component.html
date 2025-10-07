@@ -1,4 +1,4 @@
-<header class="bg-white border-b border-gray-200">
+<header class="bg-white border-b border-gray-200 z-10 relative">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="py-3">
       <div class="flex justify-between items-center">
@@ -8,34 +8,33 @@
             alt="Human Risks Logo"
             class="h-8 w-8 rounded object-cover"
           />
-
           <span class="ml-2 text-lg font-semibold text-gray-900">Hej Mads</span>
         </div>
 
         <div class="flex items-center space-x-1">
           <button
-            class="p-1.5 rounded hover:bg-gray-100 transition-colors"
+            class="p-1.5 rounded bg-[#495468] transition-colors"
             title="Filtrar"
           >
-            <i class="pi pi-filter text-gray-500 text-base"></i>
+            <img src="/icon1.svg" alt="Filtrar" class="w-5 h-5" />
           </button>
           <button
-            class="p-1.5 rounded hover:bg-gray-100 transition-colors"
-            title="Exportar"
+            class="p-1.5 rounded bg-[#495468] transition-colors"
+            title="Filtrar"
           >
-            <i class="pi pi-download text-gray-500 text-base"></i>
+            <img src="/icon2.svg" alt="Filtrar" class="w-5 h-5" />
           </button>
           <button
-            class="p-1.5 rounded hover:bg-gray-100 transition-colors"
-            title="Agregar"
+            class="p-1.5 rounded bg-[#495468] transition-colors"
+            title="Filtrar"
           >
-            <i class="pi pi-plus-circle text-gray-500 text-base"></i>
+            <img src="/icon3.svg" alt="Filtrar" class="w-5 h-5" />
           </button>
           <button
-            class="p-1.5 rounded hover:bg-gray-100 transition-colors"
-            title="Vista"
+            class="p-1.5 rounded bg-[#495468] transition-colors"
+            title="Filtrar"
           >
-            <i class="pi pi-th-large text-gray-500 text-base"></i>
+            <img src="/icon4.svg" alt="Filtrar" class="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -51,19 +50,27 @@
     </div>
   </div>
 </header>
-<!-- <button
-(click)="addCard()"
-class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-</button>
-> -->
-<div class="w-full h-[90vh] bg">
+
+<div class="w-full h-[90vh] relative">
+  <!-- Spinner de carga -->
+  <div
+    *ngIf="loading()"
+    class="absolute inset-0 flex flex-col items-center justify-center bg-white/70 z-20"
+  >
+    <div
+      class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"
+    ></div>
+    <span class="mt-4 text-gray-700 font-medium">Loading dashboard...</span>
+  </div>
+
+  <!-- Grid principal -->
   <gridster [options]="options" class="w-full h-full">
     <gridster-item
       *ngFor="let item of dashboard(); let i = index"
       [item]="item"
     >
       <div
-        class="relative w-full h-full overflow-hidden rounded-lg shadow-md group transition-all duration-200"
+        class="relative w-full h-full overflow-hidden rounded-lg group transition-all duration-200"
       >
         <button
           (click)="removeCard(i)"
@@ -73,7 +80,6 @@ class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
           ✕
         </button>
 
-        <!-- Gráfico adaptable -->
         <app-chart-viewer
           [title]="item.title"
           [options]="item.data"

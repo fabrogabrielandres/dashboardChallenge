@@ -44,8 +44,8 @@ export class ReportsComponent {
     maxCols: 12,
     minRows: 12,
     maxRows: 12,
-    defaultItemCols: 2,
-    defaultItemRows: 2,
+    defaultItemCols: 3,
+    defaultItemRows: 3,
     rowHeight: 150,
   };
 
