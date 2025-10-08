@@ -24,7 +24,7 @@
     "@tanstack/angular-query-experimental": "^5.90.2",
     "angular-gridster2": "^19.0.0",
     "echarts": "^6.0.0",
-    "ngx-echarts": "^20.0.2",
+    "ngx-echarts": "^19.0.0",
     "postcss": "^8.5.6",
     "primeicons": "^7.0.0",
     "primeng": "^19.1.4",
