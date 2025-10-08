@@ -9,11 +9,12 @@ import { ReportsService } from '../../services/reports.service';
 import { ChartViewerComponent } from '../../components/chart-viewer/chart-viewer.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { QueryClient } from '@tanstack/angular-query-experimental';
+import { GraphData } from '../../interfaces/charts.interface';
 
 interface MyGridsterItem extends GridsterItem {
   title: string;
   type: string;
-  data: any;
+  data: GraphData;
 }
 
 @Component({
