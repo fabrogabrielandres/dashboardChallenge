@@ -11,7 +11,7 @@ echarts.use([BarChart, GridComponent, CanvasRenderer]);
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, NgxEchartsDirective],
+  imports: [RouterOutlet, CommonModule ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   providers: [provideEchartsCore({ echarts })],
